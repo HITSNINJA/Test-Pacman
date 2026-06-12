@@ -30,7 +30,7 @@ int board_array[31][28] = {
     {9,5,5,5,5,7,0,2,11,1,1,7,0,2,4,0,8,1,1,11,4,0,8,5,5,5,5,10},
     {0,0,0,0,0,6,0,2,11,3,3,10,0,9,10,0,9,3,3,11,4,0,6,0,0,0,0,0},
     {0,0,0,0,0,6,0,2,4,0,0,0,0,0,0,0,0,0,0,2,4,0,6,0,0,0,0,0},
-    {0,0,0,0,0,6,0,2,4,0,8,5,0,0,0,0,5,7,0,2,4,0,6,0,0,0,0,0}, // Pintu dibuka (0,0)
+    {0,0,0,0,0,6,0,2,4,0,8,5,0,0,0,0,5,7,0,2,4,0,6,0,0,0,0,0}, 
     {5,5,5,5,5,10,0,9,10,0,6,0,0,0,0,0,0,6,0,9,10,0,9,5,5,5,5,5},
     {0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0},
     {5,5,5,5,5,7,0,8,7,0,6,0,0,0,0,0,0,6,0,8,7,0,8,5,5,5,5,5},
@@ -85,9 +85,9 @@ public:
 
     Ghost(double tx, double ty) {
         x = tx; y = ty;
-        angle = 270; // Arahkan ke atas saat mulai
+        angle = 270; 
         speed = 0.05; 
-        isExiting = true; // Mulai dengan mode keluar
+        isExiting = true; 
         color[0] = 1.0f; color[1] = 0.0f; color[2] = 0.0f;
     }
 
@@ -110,22 +110,18 @@ public:
             x += speed * cos(M_PI / 180 * angle);
             y += speed * sin(M_PI / 180 * angle);
         } else {
-            // Jika mentok saat keluar, coba arah acak tapi prioritaskan atas
             angle = (rand() % 4) * 90;
         }
 
-        // Jika sudah di luar kotak tengah (y < 12), matikan mode exiting
         if (isExiting && y < 12.5) {
             isExiting = false;
         }
     }
 
     void Chase(double px, double py) {
-        // Jika masih di dalam kotak, paksa cari jalan ke koordinat pintu (13.5, 12.0)
         double targetX = isExiting ? 13.5 : px;
         double targetY = isExiting ? 12.0 : py;
 
-        // Logika belok hanya di tengah grid agar tidak memantul liar
         if (fmod(x + 0.05, 1.0) < 0.2 && fmod(y + 0.05, 1.0) < 0.2) {
             double min_dist = 9999.0;
             double best_angle = angle;
@@ -133,7 +129,6 @@ public:
             for (int i = 0; i < 4; i++) {
                 double try_a = i * 90;
                 
-                // Jangan putar balik 180 derajat kecuali mentok
                 if (abs(try_a - angle) == 180) continue;
 
                 if (canMove(try_a)) {
@@ -160,7 +155,6 @@ Ghost* ghosts[4];
 
 void resetGame() {
     snake_body.clear();
-    // Gunakan make_pair dan koordinat tepat di jalur (13.5, 23.0)
     snake_body.push_front(make_pair(13.5, 23.0));
     angle_val = 0;
     is_animate = false;
